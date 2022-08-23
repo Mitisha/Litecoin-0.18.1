@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: litecoin
+  labels:
+    app: litecoin
+spec:
+  serviceName: litecoin
+  replicas: 2
+  selector:
+    matchLabels:
+      app: litecoin
+  template:
+    metadata:
+      labels:
+        app: litecoin
+    spec:
+      containers:
+        - name: main
+          image: mitisha7174/litecoin:0.18.1
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: litecoin-data
+            mountPath: "/home/litecoin/.litecoin"
+          resources:
+            requests:
+              memory: 256Mi
+            limits:
+              cpu: 0.5
+              memory: 256Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: litecoin-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: hostpath
+        resources:
+          requests:
+            storage: 1Gi
